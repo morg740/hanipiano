@@ -130,12 +130,24 @@
       <div class="key" onclick="playSound('b4')"><img src="סי.png" alt=""></div>
     </div>
   </div>
+<script>
+  function playSound(note) {
+    const audio = new Audio("sounds/" + note + ".wav");
+    audio.play();
+  }
 
-  <script>
-    function playSound(note) {
-      const audio = new Audio("sounds/" + note + ".wav");
-      audio.play();
-    }
-  </script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const keys = document.querySelectorAll(".key");
+
+    keys.forEach(key => {
+      const note = key.getAttribute("data-note");
+      if (note) {
+        key.addEventListener("click", () => playSound(note));
+        key.addEventListener("touchstart", () => playSound(note));
+      }
+    });
+  });
+</script>
+  
 </body>
 </html>
