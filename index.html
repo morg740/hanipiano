@@ -131,18 +131,23 @@
     </div>
   </div>
 <script>
-  function playSound(note) {
-    const audio = new Audio("sounds/" + note + ".wav");
-    audio.play();
-  }
-
+  // function playSound(note) {
+  //   const audio = new Audio("sounds/" + note + ".wav");
+  //   audio.play();
+  // }
+  const audioMap = {};
   document.addEventListener("DOMContentLoaded", () => {
     const keys = document.querySelectorAll(".key");
 
     keys.forEach(key => {
       const note = key.getAttribute("data-note");
       if (note) {
-        key.addEventListener("click", () => playSound(note));
+        const audio = new Audio("sounds/" + note + ".wav");
+        audioMap[note] = audio;
+        key.addEventListener("click", () => {
+          const sound = audioMap[note].cloneNode();
+        sound.play();
+        });
       }
     });
   });
