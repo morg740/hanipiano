@@ -184,14 +184,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await Promise.all(loadPromises);
 
-  // Resume audio context on first user interaction (iOS fix)
-  const resumeAudio = () => {
-    if (audioCtx.state === "suspended") {
-      audioCtx.resume();
-    }
-    document.removeEventListener("click", resumeAudio);
-  };
-  document.addEventListener("click", resumeAudio);
+  
 
   // Add event listeners
   keys.forEach(key => {
