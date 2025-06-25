@@ -135,22 +135,73 @@
   //   const audio = new Audio("sounds/" + note + ".wav");
   //   audio.play();
   // }
-  const audioMap = {};
-  document.addEventListener("DOMContentLoaded", () => {
-    const keys = document.querySelectorAll(".key");
+  // const audioMap = {};
+  // document.addEventListener("DOMContentLoaded", () => {
+  //   const keys = document.querySelectorAll(".key");
 
-    keys.forEach(key => {
-      const note = key.getAttribute("data-note");
-      if (note) {
-        const audio = new Audio("sounds/" + note + ".wav");
-        audioMap[note] = audio;
-        key.addEventListener("click", () => {
-          const sound = audioMap[note].cloneNode();
-        sound.play();
-        });
-      }
-    });
+  //   keys.forEach(key => {
+  //     const note = key.getAttribute("data-note");
+  //     if (note) {
+  //       const audio = new Audio("sounds/" + note + ".wav");
+  //       audioMap[note] = audio;
+  //       key.addEventListener("click", () => {
+  //         const sound = audioMap[note].cloneNode();
+  //       sound.play();
+  //       });
+  //     }
+  //   });
+  // });
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const audioBuffers = {};
+
+async function loadSound(note) {
+  const response = await fetch("sounds/" + note + ".wav");
+  const arrayBuffer = await response.arrayBuffer();
+  audioBuffers[note] = await audioCtx.decodeAudioData(arrayBuffer);
+}
+
+function playSound(note) {
+  const buffer = audioBuffers[note];
+  if (!buffer) return;
+
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  source.connect(audioCtx.destination);
+  source.start(0);
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const keys = document.querySelectorAll(".key");
+
+  // Load all sounds first
+  const loadPromises = [];
+  keys.forEach(key => {
+    const note = key.getAttribute("data-note");
+    if (note) {
+      loadPromises.push(loadSound(note));
+    }
   });
+
+  await Promise.all(loadPromises);
+
+  // Resume audio context on first user interaction (iOS fix)
+  const resumeAudio = () => {
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+    document.removeEventListener("click", resumeAudio);
+  };
+  document.addEventListener("click", resumeAudio);
+
+  // Add event listeners
+  keys.forEach(key => {
+    const note = key.getAttribute("data-note");
+    if (note) {
+      key.addEventListener("click", () => playSound(note));
+    }
+  });
+});
+
 </script>
   
 </body>
