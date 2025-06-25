@@ -151,18 +151,29 @@
   //     }
   //   });
   // });
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const audioBuffers = {};
 
 async function loadSound(note) {
-  const response = await fetch("sounds/" + note + ".wav");
-  const arrayBuffer = await response.arrayBuffer();
-  audioBuffers[note] = await audioCtx.decodeAudioData(arrayBuffer);
+  try {
+    const response = await fetch("sounds/" + note + ".wav");
+    const arrayBuffer = await response.arrayBuffer();
+    audioBuffers[note] = await audioCtx.decodeAudioData(arrayBuffer);
+  } catch (err) {
+    console.error("Error loading note:", note, err);
+  }
 }
 
 function playSound(note) {
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
   const buffer = audioBuffers[note];
-  if (!buffer) return;
+  if (!buffer) {
+    console.warn("No buffer loaded for:", note);
+    return;
+  }
 
   const source = audioCtx.createBufferSource();
   source.buffer = buffer;
@@ -172,29 +183,30 @@ function playSound(note) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const keys = document.querySelectorAll(".key");
-
-  // Load all sounds first
   const loadPromises = [];
+
   keys.forEach(key => {
     const note = key.getAttribute("data-note");
     if (note) {
-      loadPromises.push(loadSound(note));
+      loadPromises.push(loadSound(note.toLowerCase()));
     }
   });
 
   await Promise.all(loadPromises);
 
-  
+  document.addEventListener("click", () => {
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+  }, { once: true });
 
-  // Add event listeners
   keys.forEach(key => {
     const note = key.getAttribute("data-note");
     if (note) {
-      key.addEventListener("click", () => playSound(note));
+      key.addEventListener("click", () => playSound(note.toLowerCase()));
     }
   });
 });
-
 </script>
   
 </body>
