@@ -135,8 +135,7 @@
     const audio = new Audio("sounds/" + note + ".wav");
     audio.play();
   }
-key.addEventListener("click", playNote);
-key.addEventListener("touchstart", playNote);
+
   document.addEventListener("DOMContentLoaded", () => {
     const keys = document.querySelectorAll(".key");
 
