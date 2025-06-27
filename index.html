@@ -131,10 +131,10 @@
     </div>
   </div>
 <script>
- key.addEventListener("click", playNote);
-key.addEventListener("touchstart", playNote);
-       
-  });
+ function playSound(note) {
+const audio = new Audio(note + ".wav");
+audio.play();
+}
 </script>
   
 </body>
