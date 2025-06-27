@@ -131,62 +131,24 @@
     </div>
   </div>
 <script>
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const context = new AudioContext();
-  const notes = [
-    "c3","C#3","d3","D#3","e3","f3","F#3","g3","G#3","a3","A#3","b3",
-    "c4","C#4","d4","D#4","e4","f4","F#4","g4","G#4","a4","A#4","b4"
-  ];
-  const buffers = {};
-
-  async function loadSounds() {
-    for (let note of notes) {
-      const response = await fetch("sounds/" + note + ".wav");
-      const arrayBuffer = await response.arrayBuffer();
-      buffers[note] = await context.decodeAudioData(arrayBuffer);
-    }
+  function playSound(note) {
+    const audio = new Audio("sounds/" + note + ".wav");
+    audio.play();
   }
 
-  function playNote(note) {
-    if (!buffers[note]) return;
-    const source = context.createBufferSource();
-    source.buffer = buffers[note];
-    source.connect(context.destination);
-    source.start(0);
-  }
-
-  function setupKeys() {
+  document.addEventListener("DOMContentLoaded", () => {
     const keys = document.querySelectorAll(".key");
+
     keys.forEach(key => {
       const note = key.getAttribute("data-note");
       if (note) {
-        const handler = (e) => {
-          e.preventDefault();
-          playNote(note);
-        };
-        key.addEventListener("click", handler);
-        key.addEventListener("touchstart", handler);
+        key.addEventListener("click", () => playSound(note));
       }
     });
-  }
-
-  document.body.addEventListener("touchstart", () => {
-    if (context.state === 'suspended') {
-      context.resume();
-    }
-  }, { once: true });
-
-  document.body.addEventListener("click", () => {
-    if (context.state === 'suspended') {
-      context.resume();
-    }
-  }, { once: true });
-
-  window.addEventListener("DOMContentLoaded", async () => {
-    await loadSounds();
-    setupKeys();
   });
 </script>
+
+ 
 
   
 </body>
