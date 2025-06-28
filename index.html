@@ -131,21 +131,33 @@
     </div>
   </div>
 <script>
-  function playSound(note) {
-    const audio = new Audio("sounds/" + note + ".wav");
-    audio.play();
-  }
+  const keys = document.querySelectorAll(".key");
+keys.forEach(key => {
+  const note = key.getAttribute("data-note");
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const keys = document.querySelectorAll(".key");
+  const handler = (e) => {
+    e.preventDefault();
+    playNote(note);
+  };
 
-    keys.forEach(key => {
-      const note = key.getAttribute("data-note");
-      if (note) {
-        key.addEventListener("click", () => playSound(note));
-      }
-    });
-  });
+  key.addEventListener("click", handler);
+  key.addEventListener("touchstart", handler);
+});
+//  function playSound(note) {
+//    const audio = new Audio("sounds/" + note + ".wav");
+//    audio.play();
+//  }
+
+//  document.addEventListener("DOMContentLoaded", () => {
+//    const keys = document.querySelectorAll(".key");
+
+//    keys.forEach(key => {
+//      const note = key.getAttribute("data-note");
+//      if (note) {
+//        key.addEventListener("click", () => playSound(note));
+//      }
+//    });
+//  });
 </script>
 
  
