@@ -143,7 +143,17 @@
     keys.forEach(key => {
       const note = key.getAttribute("data-note");
      if (note) {
-        key.addEventListener("click", () => playSound(note));
+       const handler = (e) => {
+        e.preventDefault(); // חשוב במובייל - מונע גלילה
+        playSound(note);
+      };
+
+      key.addEventListener("click", handler);
+      key.addEventListener("touchstart", handler);
+    }
+  });
+});
+   //     key.addEventListener("click", () => playSound(note));
       }
     });
   });
