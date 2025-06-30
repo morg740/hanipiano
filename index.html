@@ -148,8 +148,8 @@
         playSound(note);
       };
 
-      key.addEventListener("click", handler);
-      key.addEventListener("touchstart", handler);
+      key.addEventListener("click", handler , () => playSound(note));
+      key.addEventListener("touchstart", handler , () => playSound(note));
     }
   });
 });
