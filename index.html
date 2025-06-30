@@ -9,23 +9,19 @@
       text-align: center;
       font-family: Arial;
     }
-
     .keyboard {
       display: inline-flex;
       justify-content: center;
       margin-top: 40px;
-      position: relative;
-    padding: 10px;
-  background-color: #fff;
-  border: 4px solid #000;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 10px;
+      background-color: #fff;
+      border: 4px solid #000;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
     .key-wrapper {
       position: relative;
     }
-
     .key {
       width: 80px;
       height: 300px;
@@ -36,21 +32,20 @@
       transition: transform 0.1s;
       cursor: pointer;
       z-index: 1;
+      touch-action: manipulation;
     }
-
     .key img {
       width: 82px;
       height: 130px;
       position: absolute;
       bottom: 7px;
       left: 1px;
+      pointer-events: none; /* חשוב מאוד! */
     }
-
     .key:active {
       transform: scale(0.98);
       background-color: #CCC;
     }
-
     .key.black {
       width: 50px;
       height: 160px;
@@ -62,95 +57,37 @@
       border: 1px solid #333;
       box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
     }
-
     .key.black:active {
       background-color: #444;
     }
   </style>
 </head>
 <body>
-  <h1>  <img src="thelogo.png" alt="לוגו סול" style="width: 300px; vertical-align: middle;horizontal-align: middle;">    
- 
-   
- </h1>
-  <div class="keyboard">
-    <!-- אוקטבה שלישית -->
-    <div class="key-wrapper">
-      <div class="key" data-note="c3"><img src="דו.png" alt=""></div>
-      <div class="key black" data-note="playSound('C#3')"></div>
-    </div>
-    <div class="key-wrapper">
-      <div class="key" data-note="d3"><img src="רה.png" alt=""></div>
-      <div class="key black" data-note="playSound('D#3')"></div>
-    </div>
-    <div class="key-wrapper">
-      <div class="key" data-note="e3"><img src="מי.png" alt=""></div>
-    </div>
-    <div class="key-wrapper">
-      <div class="key" data-note="f3"><img src="פה.png" alt=""></div>
-      <div class="key black" data-note="playSound('F#3')"></div>
-    </div>
-    <div class="key-wrapper">
-      <div class="key" data-note="g3"><img src="סול.png" alt=""></div>
-      <div class="key black" data-note="playSound('G#3')"></div>
-    </div>
-    <div class="key-wrapper">
-      <div class="key" data-note="a3"><img src="לה.png" alt=""></div>
-      <div class="key black" data-note="playSound('A#3')"></div>
-    </div>
-    <div class="key-wrapper">
-      <div class="key" data-note="b3"><img src="סי.png" alt=""></div>
-    </div>
+  <h1><img src="thelogo.png" alt="לוגו סול" style="width: 300px;"></h1>
 
-    <!-- אוקטבה רביעית -->
+  <div class="keyboard">
     <div class="key-wrapper">
       <div class="key" data-note="c4"><img src="דו.png" alt=""></div>
-      <div class="key black" data-note="playSound('C#4')"></div>
     </div>
     <div class="key-wrapper">
       <div class="key" data-note="d4"><img src="רה.png" alt=""></div>
-      <div class="key black" data-note="playSound('D#4')"></div>
     </div>
     <div class="key-wrapper">
       <div class="key" data-note="e4"><img src="מי.png" alt=""></div>
     </div>
-    <div class="key-wrapper">
-      <div class="key" data-note="f4"><img src="פה.png" alt=""></div>
-      <div class="key black" data-note="playSound('F#4')"></div>
-    </div>
-    <div class="key-wrapper">
-      <div class="key" data-note="g4"><img src="סול.png" alt=""></div>
-      <div class="key black" data-note="playSound('G#4')"></div>
-    </div>
-    <div class="key-wrapper">
-      <div class="key" data-note="a4"><img src="לה.png" alt=""></div>
-      <div class="key black" data-note="playSound('A#4')"></div>
-    </div>
-    <div class="key-wrapper">
-      <div class="key" data-note="b4"><img src="סי.png" alt=""></div>
-    </div>
   </div>
-<script>
- let audioCtx;
+
+  <script>
+    // נדרש לאפשר הפעלת סאונד רק אחרי לחיצה
+    let audioCtx;
     function initAudioContext() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
- function playSound(note) {
-    const audio = new Audio("sounds/" + note + ".wav");
-    audio.play();
- }
+      }
+    }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const keys = document.querySelectorAll(".key");
-
-    keys.forEach(key => {
-      const note = key.getAttribute("data-note");
-     if (note) {
-       const handler = (e) => {
-        e.preventDefault(); // חשוב במובייל - מונע גלילה
-        playSound(note);
-      };
-          initAudioContext(); // מפעיל אם עדיין לא הופעל
+    function playSound(note) {
+      initAudioContext(); // מפעיל אם עדיין לא הופעל
       const url = `sounds/${note}.wav`;
       fetch(url)
         .then(response => response.arrayBuffer())
@@ -163,22 +100,26 @@
         })
         .catch(err => console.error("שגיאה בטעינת צליל:", err));
     }
-        key.addEventListener("click", handler );
-      key.addEventListener("touchstart", handler );
- window.addEventListener("touchstart", initAudioContext, { once: true });
-    window.addEventListener("click", initAudioContext, { once: true });
-     
-    }
-  });
-});
-   //     key.addEventListener("click", () => playSound(note));
-      }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const keys = document.querySelectorAll(".key");
+
+      keys.forEach(key => {
+        const note = key.getAttribute("data-note");
+
+        const handler = (e) => {
+          e.preventDefault();
+          playSound(note);
+        };
+
+        key.addEventListener("click", handler);
+        key.addEventListener("touchstart", handler, { passive: false });
+      });
     });
-  });
-</script>
 
- 
-
-  
+    // הפעלת AudioContext רק אחרי פעולה של המשתמש
+    window.addEventListener("touchstart", initAudioContext, { once: true });
+    window.addEventListener("click", initAudioContext, { once: true });
+  </script>
 </body>
 </html>
