@@ -146,9 +146,9 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    const keys = document.querySelectorAll(".key, .key black");
+    const keys = document.querySelectorAll(".key, .key.black");
 
-    keys.forEach(key => {
+    keys.forEach(key black=> {
       const note = key.getAttribute("data-note");
       if (!note) return;
   
