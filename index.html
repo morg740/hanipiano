@@ -145,29 +145,27 @@
         })
         .catch(err => console.error("שגיאה בטעינת צליל:", err));
     }
+document.addEventListener("DOMContentLoaded", () => {
+    const keys = document.querySelectorAll(".key, .key.black");
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const keys = document.querySelectorAll(".key .key.black");
+    keys.forEach(key => {
+      const note = key.getAttribute("data-note");
+      if (!note) return;
 
-      keys.forEach(key => {
-        const note = key.getAttribute("data-note");
-        
-      keys.forEach(key black => {
-        const note = key.getAttribute("data-note");
+      const handler = (e) => {
+        e.preventDefault();
+        playSound(note);
+      };
 
-        const handler = (e) => {
-          e.preventDefault();
-          playSound(note);
-        };
-
-        key.addEventListener("click", handler);
-        key.addEventListener("touchstart", handler, { passive: false });
-      });
+      key.addEventListener("click", handler);
+      key.addEventListener("touchstart", handler, { passive: false });
     });
+  });
 
     // הפעלת AudioContext רק אחרי פעולה של המשתמש
     window.addEventListener("touchstart", initAudioContext, { once: true });
     window.addEventListener("click", initAudioContext, { once: true });
   </script>
 </body>
+  
 </html>
